@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pagamento via Pix</title>
+<style>
+  body { font-family: Arial; background: #0f2027; color: #eee; text-align: center; padding: 20px; }
+  h1, h2 { color: #00e5ff; text-shadow: 0 0 10px #00e5ff; }
+  .info { display: flex; align-items: center; gap: 10px; margin: 15px 0; justify-content: center; }
+  .info img { width: 40px; height: 40px; }
+  input { padding: 10px; border-radius: 8px; border: 1px solid #00e5ff; font-size: 16px; width: 250px; margin-bottom: 15px; }
+  button { padding: 12px 25px; margin-top: 10px; background: #0a0a0a; color: #00e5ff; cursor: pointer; border-radius: 12px; border: 1px solid #00e5ff; font-size: 17px; transition: 0.3s; }
+  button:hover { background: #00e5ff; color: #121212; }
+  #mensagem { margin-top: 15px; color: #0f0; font-weight: bold; }
+  .pix-box { margin-top: 20px; }
+  .pix-number { display: flex; align-items: center; gap: 10px; justify-content: center; }
+  .copy-btn { padding: 6px 12px; background: #00e5ff; border: none; border-radius: 6px; color: #121212; font-weight: bold; cursor: pointer; }
+  .copy-btn:hover { background: #00bcd4; }
+  .qr-code { margin: 20px auto; }
+  .qr-code img { width: 180px; border: 2px solid #00e5ff; border-radius: 12px; }
+  .note { margin-top: 10px; font-size: 14px; color: #ffeb3b; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<h1>💳 Pagamento via Pix</h1>
+
+<!-- QR Code -->
+<div class="qr-code">
+  <img src="https://i.imgur.com/m7qXg7N.jpeg" alt="QR Code Pix">
+</div>
+
+<h2>Use estas informações para fazer o Pix</h2>
+
+<div class="info">
+  <img src="https://png.pngtree.com/png-clipart/20190629/original/pngtree-vector-bank-icon-png-image_4101273.jpg" alt="Banco">
+  <span>Banco: Mercado Pago</span>
+</div>
+
+<div class="info">
+  <img src="https://cdn-icons-png.flaticon.com/256/1373/1373255.png" alt="Nome">
+  <span>Nome: Isac Coelho Barbosa</span>
+</div>
+
+<div class="info pix-box">
+  <img src="https://images.seeklogo.com/logo-png/50/2/pix-banco-central-brasil-logo-png_seeklogo-500502.png" alt="Pix">
+  <div class="pix-number">
+    <span id="pixKey">Número Pix: 84986222876</span>
+    <button class="copy-btn" type="button" onclick="copiarPix()">📋 Copiar</button>
+  </div>
+</div>
+
+<!-- Input escondido para copiar -->
+<input type="text" id="pixHidden" value="84986222876" style="position:absolute;left:-9999px;">
+
+<hr style="margin:30px 0; border:1px solid #00e5ff;">
+
+<h2>Formulário de Confirmação</h2>
+<p>Após fazer o Pix, preencha as informações abaixo:</p>
+
+<form id="formCliente">
+  <input type="text" id="appNome" placeholder="Qual nome do app" required><br>
+  <input type="text" id="nomePix" placeholder="Nome completo do pagador (opcional)"><br>
+  <input type="text" id="whatsappCliente" placeholder="Seu WhatsApp (ex: 5599999999999)" required><br>
+  <button type="submit">✅ OK - Enviar</button>
+  <p class="note">📎 Próxima etapa: mostrar o comprovante.</p>
+</form>
+
+<p id="mensagem"></p>
+
+<script>
+const numeroVendedor = "558486222876"; // Seu WhatsApp fixo
+
+// Função de copiar Pix (compatível com Google Sites)
+function copiarPix() {
+  const input = document.getElementById("pixHidden");
+  input.select();
+  document.execCommand("copy");
+  alert("✅ Chave Pix copiada: " + input.value);
+}
+
+document.getElementById("formCliente").addEventListener("submit", function(e){
+  e.preventDefault();
+
+  const appNome = document.getElementById("appNome").value.trim();
+  const nomePix = document.getElementById("nomePix").value.trim() || "Não informado";
+  const whatsappCliente = document.getElementById("whatsappCliente").value.trim();
+
+  if(!appNome || !whatsappCliente){
+    alert("⚠️ Preencha todos os campos obrigatórios!");
+    return;
+  }
+
+  // Mensagem com pedido de comprovante
+  const mensagem = `📌 Novo pagamento via Pix!\n\nApp: ${appNome}\nNome do pagador: ${nomePix}\nWhatsApp do cliente: ${whatsappCliente}\n\n📎 Por favor enviar o comprovante do seu Pix 👇`;
+
+  const link = `https://wa.me/${numeroVendedor}?text=${encodeURIComponent(mensagem)}`;
+
+  window.open(link, "_blank");
+
+  document.getElementById("mensagem").innerText = "Mensagem pronta para enviar no WhatsApp!";
+  this.reset();
+});
+</script>
+
+</body>
+</html>
